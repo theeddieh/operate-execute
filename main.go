@@ -8,34 +8,67 @@ import (
 // rescurse down to rightmost expression with * or /,
 // calculate, and return
 // use that term in the prior expression
-
+// cases:
+// - evaluate as is and return subresult
+// - pass remaining expressing to be evaluated
+// - * as sections first, then +
 func execute(expression []string) int {
 
-	var firstTerm, secondTerm, answerTerm int
+	var firstTerm int
+	// var secondTerm int
 	var operation string
-	// var nextExpression[]string
+	// var nextExpression []string
+	var result int
 
 	firstTerm, _ = strconv.Atoi(expression[0])
-	operation = expression[1]
-	secondTerm, _ = strconv.Atoi(expression[2])
 
-	// nextExpression = expression[2:]
-	// secondTerm = execute(nextExpression)
-
-	switch operation {
-	case "*":
-		answerTerm = (firstTerm * secondTerm)
-	case "/":
-		answerTerm = (firstTerm / secondTerm)
-	case "+":
-		answerTerm = (firstTerm + secondTerm)
-	case "-":
-		answerTerm = (firstTerm - secondTerm)
-	default:
-		fmt.Println("operation error")
+	if len(expression) == 1 {
+		//fmt.Println(firstTerm, ".")
+		result = firstTerm
+	}
+	if len(expression) == 3 {
+		// at end of sub section?
 	}
 
-	return answerTerm
+	if len(expression) >= 3 {
+		operation = expression[1]
+		//fmt.Println(firstTerm, " ", operation, " ")
+
+		switch operation {
+		case "*":
+			result = firstTerm * execute(expression[2:])
+		case "/":
+			result = firstTerm / execute(expression[2:])
+		case "+":
+			result = firstTerm + execute(expression[2:])
+		case "-":
+			result = firstTerm - execute(expression[2:])
+		default:
+			fmt.Println("???")
+		}
+	}
+
+	return result
+}
+
+// peek ahead helpers
+
+func nextMulDiv(expression []string) int {
+	for i, s := range expression {
+		if s == "*" || s == "/" {
+			return i
+		}
+	}
+	return 0
+}
+
+func nextAddSub(expression []string) int {
+	for i, s := range expression {
+		if s == "+" || s == "-" {
+			return i
+		}
+	}
+	return 0
 }
 
 func main() {
@@ -45,9 +78,9 @@ func main() {
 		{"9", "-", "5"},
 		{"4", "*", "2"},
 		{"9", "+", "7"},
-		{"1", "*", "5", "-", "2"},
-		{"8", "/", "2", "+", "3"},
-		{"3", "+", "2", "*", "2"},
+		{"2", "*", "5", "-", "9"},
+		{"8", "/", "4", "+", "3"},
+		{"1", "+", "2", "*", "3"},
 		{"6", "+", "9", "/", "3"},
 	}
 
