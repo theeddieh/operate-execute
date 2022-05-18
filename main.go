@@ -17,35 +17,52 @@ func execute(expression []string) int {
 	var firstTerm int
 	// var secondTerm int
 	var operation string
-	// var nextExpression []string
+	var next int
+	var nextExpression []string
 	var result int
 
 	firstTerm, _ = strconv.Atoi(expression[0])
 
+	// done?
 	if len(expression) == 1 {
-		//fmt.Println(firstTerm, ".")
-		result = firstTerm
-	}
-	if len(expression) == 3 {
-		// at end of sub section?
+		return firstTerm
 	}
 
-	if len(expression) >= 3 {
-		operation = expression[1]
-		//fmt.Println(firstTerm, " ", operation, " ")
+	length := len(expression)
+	if length == 3 {
+		nextExpression = expression[2:]
+	}
 
-		switch operation {
-		case "*":
-			result = firstTerm * execute(expression[2:])
-		case "/":
-			result = firstTerm / execute(expression[2:])
-		case "+":
-			result = firstTerm + execute(expression[2:])
-		case "-":
-			result = firstTerm - execute(expression[2:])
-		default:
-			fmt.Println("???")
+	operation = expression[1]
+	switch operation {
+	case "*":
+		if length > 3 {
+			next = nextAddSub(expression[2:])
+			nextExpression = expression[2:next]
 		}
+		result = firstTerm * execute(nextExpression)
+	case "/":
+		if length > 3 {
+			next = nextAddSub(expression[2:])
+			nextExpression = expression[2:next]
+
+		}
+		result = firstTerm / execute(nextExpression)
+	case "+":
+		if length > 3 {
+			next = nextMulDiv(expression[2:])
+			nextExpression = expression[2:next]
+
+		}
+		result = firstTerm + execute(nextExpression)
+	case "-":
+		if length > 3 {
+			next = nextMulDiv(expression[2:])
+			nextExpression = expression[2:next]
+		}
+		result = firstTerm - execute(nextExpression)
+	default:
+		fmt.Println("???")
 	}
 
 	return result
@@ -57,9 +74,10 @@ func nextMulDiv(expression []string) int {
 	for i, s := range expression {
 		if s == "*" || s == "/" {
 			return i
+
 		}
 	}
-	return 0
+	return len(expression)
 }
 
 func nextAddSub(expression []string) int {
@@ -68,7 +86,7 @@ func nextAddSub(expression []string) int {
 			return i
 		}
 	}
-	return 0
+	return len(expression)
 }
 
 func main() {
