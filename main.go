@@ -1,86 +1,62 @@
 package main
 
-import "fmt"
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
+// rescurse down to rightmost expression with * or /,
+// calculate, and return
+// use that term in the prior expression
 
-// 1 * 2 ....
-func execute(statement []string) int {
-  
-  first := statement[0]
-  op := statement[1]
-  var second string
-  
-  
-  for s, i := range statement {
-    
-      var op string
-      var first, second int
-      var r int
-      
-      switch s {
-      case "+":
-        op = s
-        r = operate(first, op, statement[i+1])
-      case "-":
-        op = s
-        r = operate(first, op, statement[i+1])
-      case "*":
-        op = s
-        r = operate(first, op, statement[i+1])
-      case "/":
-        op = s
-        r = operate(first, op, statement[i+1])
-      else 
-        first, _ = strconv.Atoi(10, s)
-        
-      
-        
-      
-  }
-  
-  if op == "*" || op == "/" {
-    second = statement[2]
-  } else {
-    nextOp := []string{statement[2], statement[3], statement[4]}
-    second = strconv.FormatInt(10, execute(nextOp))
-  }
-  
-  result := operate(first, op, second)
-   
-   
-  return excute(result, )
-  
+func execute(expression []string) int {
+
+	var firstTerm, secondTerm, answerTerm int
+	var operation string
+	// var nextExpression[]string
+
+	firstTerm, _ = strconv.Atoi(expression[0])
+	operation = expression[1]
+	secondTerm, _ = strconv.Atoi(expression[2])
+
+	// nextExpression = expression[2:]
+	// secondTerm = execute(nextExpression)
+
+	switch operation {
+	case "*":
+		answerTerm = (firstTerm * secondTerm)
+	case "/":
+		answerTerm = (firstTerm / secondTerm)
+	case "+":
+		answerTerm = (firstTerm + secondTerm)
+	case "-":
+		answerTerm = (firstTerm - secondTerm)
+	default:
+		fmt.Println("operation error")
+	}
+
+	return answerTerm
 }
 
-func operate(f, op, s string) int {
-  
-    first, _ := strconv.Atoi(f)
-    second, _ := strconv.Atoi(s)  
-    fmt.Printf("%s %s %s \n", f, op, s)
-    var result int
-    switch op {
-      case "+":
-        result =  first + second
-      case "-":
-        result  = first - second
-      case "*":
-        result  = first * second
-      case "/":
-        result  = first / second
-    }  
-    
-    return result
+func main() {
+
+	expressions := [][]string{
+		{"4", "/", "2"},
+		{"9", "-", "5"},
+		{"4", "*", "2"},
+		{"9", "+", "7"},
+		{"1", "*", "5", "-", "2"},
+		{"8", "/", "2", "+", "3"},
+		{"3", "+", "2", "*", "2"},
+		{"6", "+", "9", "/", "3"},
+	}
+
+	for _, e := range expressions {
+		// fmt.Println(e)
+		fmt.Println(execute(e))
+	}
+
+	// a := []string{"4", "/", "2"}
+	// b := []string{"1", "*", "2", "+", "3"}
+
 }
-
-
-func main(){
-  
-  a := []string{"4", "/", "2"}
-  fmt.Println(execute(a))
-
-  b := []string{"1","*","2","+","3"}
-  fmt.Println(execute(b))
-  
-}
-
