@@ -15,56 +15,37 @@ import (
 func execute(expression []string) int {
 
 	var firstTerm int
-	// var secondTerm int
+	var secondTerm int
 	var operation string
-	var next int
-	var nextExpression []string
+	//var next int
+	//var nextExpression []string
 	var result int
 
 	firstTerm, _ = strconv.Atoi(expression[0])
 
-	// done?
-	if len(expression) == 1 {
-		return firstTerm
-	}
-
 	length := len(expression)
-	if length == 3 {
-		nextExpression = expression[2:]
+
+	if length == 1 {
+		return firstTerm
+	} else if length == 3 {
+		secondTerm, _ = strconv.Atoi(expression[2])
+	} else {
+		secondTerm = execute(expression[2:])
 	}
 
 	operation = expression[1]
 	switch operation {
 	case "*":
-		if length > 3 {
-			next = nextAddSub(expression[2:])
-			nextExpression = expression[2:next]
-		}
-		result = firstTerm * execute(nextExpression)
+		result = firstTerm * secondTerm
 	case "/":
-		if length > 3 {
-			next = nextAddSub(expression[2:])
-			nextExpression = expression[2:next]
-
-		}
-		result = firstTerm / execute(nextExpression)
+		result = firstTerm / secondTerm
 	case "+":
-		if length > 3 {
-			next = nextMulDiv(expression[2:])
-			nextExpression = expression[2:next]
-
-		}
-		result = firstTerm + execute(nextExpression)
+		result = firstTerm + secondTerm
 	case "-":
-		if length > 3 {
-			next = nextMulDiv(expression[2:])
-			nextExpression = expression[2:next]
-		}
-		result = firstTerm - execute(nextExpression)
+		result = firstTerm - secondTerm
 	default:
 		fmt.Println("???")
 	}
-
 	return result
 }
 
@@ -74,7 +55,6 @@ func nextMulDiv(expression []string) int {
 	for i, s := range expression {
 		if s == "*" || s == "/" {
 			return i
-
 		}
 	}
 	return len(expression)
@@ -103,11 +83,6 @@ func main() {
 	}
 
 	for _, e := range expressions {
-		// fmt.Println(e)
-		fmt.Println(execute(e))
+		fmt.Printf("%v = %d\n", e, execute(e))
 	}
-
-	// a := []string{"4", "/", "2"}
-	// b := []string{"1", "*", "2", "+", "3"}
-
 }
